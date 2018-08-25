@@ -133,3 +133,82 @@ low_outliers=np.random.rand(10)*-50-100
 data=np.concatenate((uniformSkewed,high_outliers,low_outliers))
 plt.boxplot(data)
 plt.show()
+
+from pylab import *
+
+def de_mean(x):
+    xmean=mean(x)
+    return [xi-xmean for xi in x]
+
+def covariance(x,y):
+    n=len(x)
+    return dot(de_mean(x),de_mean(y))/(n-1)
+
+pageSpeeds=np.random.normal(3.0,1.0,1000)
+purchaseAmount=np.random.normal(50.0,10.0,1000)
+scatter(pageSpeeds,purchaseAmount)
+covariance(pageSpeeds,purchaseAmount)
+
+purchaseAmount=np.random.normal(50.0,10.0,1000)/pageSpeeds
+scatter(pageSpeeds,purchaseAmount)
+covariance(pageSpeeds,purchaseAmount)
+
+np.cov(pageSpeeds,purchaseAmount)
+
+def correlation(x,y):
+    stddevx=x.std()
+    stddevy=y.std()
+    return covariance(x,y)/stddevx/stddevy #In real lide you'd check for divide by zero here
+
+correlation(pageSpeeds,purchaseAmount)
+
+np.corrcoef(pageSpeeds,purchaseAmount)
+
+purchaseAmount=100-pageSpeeds*3
+scatter(pageSpeeds,purchaseAmount)
+correlation(pageSpeeds,purchaseAmount)
+
+from numpy import random
+random.seed(0)
+totals={20:0,30:0,40:0,50:0,60:0,70:0}
+purchases={20:0,30:0,40:0,50:0,60:0,70:0}
+totalPurchases=0
+for _ in range(100000):
+    ageDecade=random.choice([20,30,40,50,60,70])
+    purchaseProbability=float(ageDecade)/100.0
+    totals[ageDecade]+=1
+    if(random.random()<purchaseProbability):
+        totalPurchases+=1
+        purchases[ageDecade]+=1
+        
+totals
+purchases
+totalPurchases
+
+PEF=float(purchases[30])/float(totals[30])
+print("P(purchase|30s): ",PEF)
+PF=float(totals[30])/100000.0
+print("P(30s): ",PF)
+PE=float(totalPurchases)/100000.0
+print("P(purchase): ",PE)
+print("P(30s)P(purchase): ",PE*PF)
+print("P(30s,purchase): ",float(purchases[30])/100000.0)
+(float(purchases[30])/100000.0)/PF
+
+from numpy import random
+random.seed(0)
+totals={20:0,30:0,40:0,50:0,60:0,70:0}
+purchases={20:0,30:0,40:0,50:0,60:0,70:0}
+totalPurchases=0
+for _ in range(100000):
+    ageDecade=random.choice([20,30,40,50,60,70])
+    purchaseProbability=0.4
+    totals[ageDecade]+=1
+    if(random.random()<purchaseProbability):
+        totalPurchases+=1
+        purchases[ageDecade]+=1
+        
+PEF=float(purchases[30])/float(totals[30])
+print("P(purchase|30s): ",PEF)
+PE=float(totalPurchases)/100000.0
+print("P(purchase): ",PE)
